@@ -1,5 +1,6 @@
 -- Auth Session --
 Contributor: Victor Caviteno.
+Version: 1.01
 Requires at least: 4.5
 Tested up to: 4.8
 Stable Tag: 4.8
@@ -34,3 +35,7 @@ gervic@gmx.com
 
 Facebook: https://www.facebook.com/gervic23
 Plugin Site: http://onegerv.cf/wp-plugins/
+
+-- 1.01 --
+Recaptcha codes update.
+

@@ -35,8 +35,14 @@ class Bootstrap extends Core implements AS_Main {
     //Enqueque Scripts For Admin Page.
     add_action( 'admin_enqueue_scripts', [ $this, 'admin_enqueque_scripts' ] );
 
+    //Append <Head>Tag.
+    add_action( 'wp_head', [ $this, 'append_head' ] );
+
     //Enqueue Scripts on Front End.
     add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
+
+    //Append Footer.
+    add_action( 'wp_footer', [ $this, 'append_footer' ] );
 
     //Admin Pages.
     add_action( 'admin_menu', [ $this, 'admin_menu' ] );
@@ -84,9 +90,41 @@ class Bootstrap extends Core implements AS_Main {
     }
   }
 
+  //Append some codes in the <head> tag.
+  //Adding Recaptcha Callback on head tag.
+  public function append_head() {
+    $recaptcha = new Recaptcha();
+
+    //Check if Recaptcha Option is Enabled.
+    if ($recaptcha->enabled) {
+      ?>
+        <script>
+        var onloadCallback = function() {
+          grecaptcha.render('recaptcha', {
+            'sitekey' : '<?php echo $recaptcha->site_key ?>'
+          });
+        };
+        </script>
+      <?php
+    }
+  }
+
   public function enqueue_scripts() {
     wp_enqueue_style( 'AS_Style', plugins_url( '/auth_session/css/style.css' ) );
     wp_enqueue_script( 'AS_Recaptcha', 'https://www.google.com/recaptcha/api.js', '', '', true );
+  }
+
+  //Append some codes in footer.
+  //Recaptcha API JS.
+  public function append_footer() {
+    $recaptcha = new Recaptcha();
+    if ( $recaptcha->enabled ) {
+      ?>
+      <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+        async defer>
+    </script>
+      <?php
+    }
   }
 
   //Include js and css scripts.

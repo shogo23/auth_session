@@ -3,6 +3,7 @@
 /*
 * Plugin Name: Auth Session
 * Description: Made by gervic.
+* Version: 1.01
 * Author: Victor Caviteno
 * Author URI : http://www.facebook.com/gervic23
 */

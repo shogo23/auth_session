@@ -52,29 +52,35 @@ class Recaptcha {
 
   //Recaptcha's Frontend checkbox.
   public function form() {
-
     if ( $this->enabled ) {
-      return '<div class="as_recaptcha g-recaptcha" data-sitekey="' . $this->site_key . '"></div>';
+      return '<div id="recaptcha"></div>';
     }
   }
 
   //Recaptcha's Validation.
   public function validation() {
-
-    //If Recaptcha has Response.
     if ( $_POST['g-recaptcha-response'] ) {
 
-      //Recaptcha's Response.
-      $response = $_POST['g-recaptcha-response'];
+      //Post Datas.
+      $data = [
+        'secret' => $this->secret_key,
+        'response' => $_POST['g-recaptcha-response'],
+        'remoteip' => $_SERVER['REMOTE_ADDR'],
+      ];
 
-      //Recaptha's Data Verification Response.
-      $data = $this->url . '?secret=' . $this->secret_key . '&response=' . $response . '&ip=' . $_SERVER['REMOTE_ADDR'];
+      $options = [
+          'http' => [
+              'header' => 'Content-type: application/x-www-form-urlencoded\r\n',
+              'method' => 'POST',
+              'content' => http_build_query($data),
+          ],
+      ];
 
-      //Decode JSON to PHP Array.
-      $data = json_decode( file_get_contents( $data ) );
+      $context = stream_context_create($options);
+      $response = file_get_contents($this->url, false, $context);
+      $res = json_decode($response, true);
 
-      //If Verification Success.
-      if ( $data->success ) {
+      if ($res['success']) {
         return 1;
       } else {
         return 0;
